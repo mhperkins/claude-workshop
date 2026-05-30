@@ -4,6 +4,40 @@ export const lesson03 = {
   title: 'Markdown and Structured Writing',
   technicalBar: 'Low',
   concept: 'Markdown is the native language of Claude. Using structured sections, headers, and XML tags as "slots" makes Claude\'s output predictable and parseable. Templates are tools: write them once, fill them forever.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user gives a markdown template and Claude returns it filled in with section headers and XML tags',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'You are a helpful assistant that fills in document templates precisely.',
+      user: 'Fill this template, using the exact headers and tags I give you.',
+      response: [
+        { type: 'code', filename: 'response.md', code: '# Git — Quick Start\n## Summary\n<summary>Version control for code.</summary>\n<steps>- git init</steps>' },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. "Precisely" tells Claude to respect your structure rather than improvise its own.',
+      },
+      {
+        x: 70, y: 46,
+        label: 'Give the slots',
+        text: 'Your prompt supplies the template. Section headers act as slots Claude fills the same way every time.',
+      },
+      {
+        x: 38, y: 60,
+        label: 'Headers as structure',
+        text: 'Claude mirrors your "##" headers exactly, so the output is predictable across many subjects.',
+      },
+      {
+        x: 38, y: 74,
+        label: 'XML tags as boundaries',
+        text: 'Tags like <summary> mark machine-extractable regions. This is how apps pull one field out of a longer response.',
+      },
+    ],
+  },
   keyIdeas: [
     'Claude reads and writes markdown reliably because it\'s saturated in the training data',
     'Structured sections act as slots Claude fills in consistently',

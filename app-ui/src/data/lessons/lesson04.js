@@ -4,6 +4,40 @@ export const lesson04 = {
   title: 'Project Memory and Context Management',
   technicalBar: 'Low',
   concept: 'Claude has no memory between sessions. Your job is to build a memory system it can read. CLAUDE.md is a living project brief: the single document that lets every new session pick up where the last one left off.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user describes a project and Claude returns a CLAUDE.md project brief',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'You write CLAUDE.md files that are lean, current, and actionable.',
+      user: 'Write a CLAUDE.md for a Vite + React finance tracker, localStorage only.',
+      response: [
+        { type: 'code', filename: 'CLAUDE.md', code: '# Finance Tracker\n## Current state\nExpense form + list work; totals next.\n## Rules: no TypeScript, named exports' },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. It tells Claude to write a brief, not exhaustive documentation.',
+      },
+      {
+        x: 72, y: 46,
+        label: 'Describe the project',
+        text: 'Stack, state, and rules in one or two lines. The more concrete you are, the less Claude has to guess.',
+      },
+      {
+        x: 40, y: 60,
+        label: 'Current state first',
+        text: 'A CLAUDE.md leads with where things stand, so the next session picks up instantly instead of re-deriving context.',
+      },
+      {
+        x: 40, y: 74,
+        label: 'Rules, kept lean',
+        text: 'Standing conventions live here. This is the durable memory that survives between sessions; the chat does not.',
+      },
+    ],
+  },
   keyIdeas: [
     'Context decay is the number one productivity killer with AI tools',
     'CLAUDE.md is a project brief, not documentation. It stays lean and current.',

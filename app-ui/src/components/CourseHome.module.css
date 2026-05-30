@@ -9,12 +9,40 @@
   margin-bottom: 40px;
 }
 
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
 .title {
   font-family: var(--font-serif);
   font-size: 36px;
   font-weight: 600;
   color: var(--tp);
-  margin: 0 0 8px;
+  margin: 0;
+}
+
+.resetBtn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--tm);
+  cursor: pointer;
+  white-space: nowrap;
+  margin-top: 6px;
+  flex-shrink: 0;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.resetBtn:hover {
+  border-color: var(--ts);
+  color: var(--ts);
 }
 
 .subtitle {
@@ -52,6 +80,11 @@
 .cardDone {
   border-color: var(--green);
   background: var(--green-bg);
+}
+
+.cardTool {
+  border-color: var(--amber);
+  border-style: dashed;
 }
 
 .cardTop {

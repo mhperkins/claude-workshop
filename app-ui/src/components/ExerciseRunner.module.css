@@ -35,7 +35,6 @@
 }
 
 .contextLabel,
-.systemLabel,
 .promptLabel,
 .outputLabel,
 .reflectionLabel {
@@ -46,24 +45,95 @@
   letter-spacing: 0.07em;
 }
 
+/* ── Prompt blueprint diagram ── */
+
+.blueprint {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.blueprintSystem {
+  background: var(--warm);
+  padding: 12px 14px;
+}
+
+.blueprintUser {
+  background: white;
+  padding: 12px 14px;
+}
+
+.blueprintHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+
+.blueprintTag {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--amber-bg);
+  border-radius: 3px;
+  padding: 2px 5px;
+}
+
+.blueprintTagUser {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--green-bg);
+  border-radius: 3px;
+  padding: 2px 5px;
+}
+
+.blueprintLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.blueprintText {
+  font-size: 13px;
+  color: var(--ts);
+  margin: 0;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.blueprintPlaceholder {
+  font-size: 12px;
+  color: var(--tm);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.blueprintArrow {
+  text-align: center;
+  padding: 4px 0;
+  font-size: 16px;
+  color: var(--border);
+  background: linear-gradient(var(--warm), white);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  line-height: 1;
+}
+
 .contextText {
   font-size: 13px;
   color: var(--ts);
   line-height: 1.55;
   margin: 0;
-}
-
-.systemRow {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.systemText {
-  font-size: 13px;
-  color: var(--ts);
-  margin: 0;
-  font-style: italic;
 }
 
 .promptSection {
@@ -122,6 +192,24 @@
   cursor: default;
 }
 
+.claudeBtn {
+  padding: 8px 14px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--tm);
+  cursor: pointer;
+  margin-left: auto;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.claudeBtn:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
 .stopBtn {
   padding: 8px 16px;
   background: none;
@@ -155,12 +243,8 @@
   color: #e5e1da;
   padding: 16px;
   border-radius: 6px;
-  font-size: 13px;
-  line-height: 1.65;
-  white-space: pre-wrap;
   max-height: 320px;
   overflow-y: auto;
-  font-family: var(--font-sans);
 }
 
 .cursor {

@@ -4,6 +4,45 @@ export const lesson09 = {
   title: 'Troubleshooting and Bug Fixing',
   technicalBar: 'Medium',
   concept: 'Claude fixes bugs faster when you give it the right information. The skill is knowing what to include: error message, file path, what you expected, what actually happened. A good bug report is half the solution.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user pastes a complete bug report and Claude returns a root-cause diagnosis',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'Senior dev debugging code. Identify root causes, not symptoms.',
+      user: 'Error: undefined is not a function (.map). File: PieceList.jsx:12. Expected list; got crash.',
+      response: [
+        { type: 'text', text: 'Root cause: pieces is undefined on first render, before loadPieces() returns.' },
+        { type: 'bullets', items: [
+          'Fix: default the prop to []',
+          'Prevent: guard with pieces?.map',
+          'Why: render runs before data loads',
+        ] },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. Asking for root cause, not just a patch, is what makes the fix durable.',
+      },
+      {
+        x: 72, y: 46,
+        label: 'A complete report',
+        text: 'Full error, file and line, expected vs. actual. With all four, Claude can diagnose without a round of follow-up questions.',
+      },
+      {
+        x: 40, y: 62,
+        label: 'Why, then fix',
+        text: 'Claude explains what is undefined and why before proposing the change. The "why" is the part you actually learn from.',
+      },
+      {
+        x: 40, y: 76,
+        label: 'A defensive pattern',
+        text: 'The guard prevents the whole class of error, not just this one instance. Always ask for the pattern, not only the patch.',
+      },
+    ],
+  },
   keyIdeas: [
     'Paste the full error: not just the last line, not a paraphrase',
     'Include: what you expected, what happened, file path, relevant code',

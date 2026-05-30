@@ -4,6 +4,45 @@ export const lesson07 = {
   title: 'Training and Evaluation',
   technicalBar: 'Medium',
   concept: '"It worked once" is not the same as "it works reliably." Training Claude to behave consistently requires a benchmark, a controlled experiment, annotation of real output, and rules extracted from patterns. The system prompt is a hypothesis: you test it and update it.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user pastes two prompt versions and Claude analyzes the difference',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'Prompt engineering expert. Identify concrete differences, not vague impressions.',
+      user: 'Compare prompt A ("summarize this") with prompt B (audience + scope + length).',
+      response: [
+        { type: 'text', text: 'Prompt B is stronger. The specific additions:' },
+        { type: 'bullets', items: [
+          'Audience: "a performer learning it"',
+          'Scope: structure + hardest sections',
+          'Length cap: under 200 words',
+        ] },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. It pushes Claude toward concrete, comparable observations.',
+      },
+      {
+        x: 72, y: 46,
+        label: 'Change one thing',
+        text: 'An A/B test holds everything constant except one variable, so any difference you see is caused by that change.',
+      },
+      {
+        x: 40, y: 62,
+        label: 'Name the difference',
+        text: 'Forcing Claude to articulate why B is better turns a gut feeling into a reusable lesson.',
+      },
+      {
+        x: 40, y: 76,
+        label: 'Categories become rules',
+        text: 'Audience, scope, length: each recurring category is a candidate standing rule for your system prompt.',
+      },
+    ],
+  },
   keyIdeas: [
     'Benchmark first: you need a human baseline before you can measure improvement',
     'A/B testing: same prompt, one variable changed, evaluate the difference',

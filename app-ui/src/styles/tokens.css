@@ -17,6 +17,18 @@
   --green-bg:  #F0FDF4;
   --red:       #DC2626;
 
+  /* text + surfaces on the dark --ch panel */
+  --ch-fg:        #E5E1DA;
+  --ch-fg-strong: #F5F0EA;
+  --ch-fg-muted:  #B8B0A6;
+  --ch-fg-dim:    #908880;
+  --ch-line:        rgba(255, 255, 255, 0.08);
+  --ch-line-strong: rgba(255, 255, 255, 0.15);
+  --ch-fill:        rgba(255, 255, 255, 0.06);
+  --ch-code-bg:        rgba(0, 0, 0, 0.35);
+  --ch-code-inline-bg: rgba(255, 255, 255, 0.1);
+  --amber-border: #F0C060;
+
   --font-serif: 'Cormorant Garamond', serif;
   --font-sans:  'DM Sans', sans-serif;
 

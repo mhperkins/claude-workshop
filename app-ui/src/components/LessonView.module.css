@@ -1,20 +1,22 @@
-.view {
-  display: grid;
-  grid-template-columns: 1fr 480px;
+.page {
   min-height: 100vh;
-  max-width: 1200px;
-  margin: 0 auto;
-  gap: 0;
-}
-
-.content {
-  padding: 40px 48px 40px 32px;
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-  max-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  background: var(--cream);
+}
+
+/* ── Top bar ── */
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-bottom: 1px solid var(--border);
+  background: var(--cream);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .back {
@@ -25,12 +27,137 @@
   color: var(--tm);
   cursor: pointer;
   padding: 0;
-  align-self: flex-start;
+  min-width: 100px;
+  text-align: left;
   transition: color 0.15s;
 }
 
 .back:hover {
   color: var(--amber);
+}
+
+.dots {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dotActive {
+  background: var(--amber);
+  transform: scale(1.35);
+}
+
+.dotDone {
+  background: var(--green);
+}
+
+.dotActive.dotDone {
+  background: var(--green);
+}
+
+.slideLabel {
+  font-size: 12px;
+  color: var(--tm);
+  font-weight: 500;
+  min-width: 100px;
+  text-align: right;
+}
+
+/* ── Slide area (track + side arrows) ── */
+
+.slideArea {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+
+.track {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.arrowBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--border);
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ts);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transition: border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+
+.arrowBtn:hover:not(:disabled) {
+  border-color: var(--amber);
+  color: var(--amber);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.arrowBtn:disabled {
+  opacity: 0.2;
+  cursor: default;
+  box-shadow: none;
+}
+
+.arrowLeft  { left: 16px; }
+.arrowRight { right: 16px; }
+
+.slide {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 32px 64px;
+  animation-duration: 0.28s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+.slideForward {
+  animation-name: slideInRight;
+}
+
+.slideBack {
+  animation-name: slideInLeft;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Intro card ── */
+
+.introCard {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
 .classTag {
@@ -43,29 +170,29 @@
 
 .title {
   font-family: var(--font-serif);
-  font-size: 32px;
+  font-size: 40px;
   font-weight: 600;
   color: var(--tp);
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .concept {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--ts);
-  line-height: 1.65;
+  line-height: 1.7;
   margin: 0;
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .sectionHead {
   font-family: var(--font-serif);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--tp);
   margin: 0;
@@ -73,25 +200,25 @@
 
 .ideas {
   margin: 0;
-  padding: 0 0 0 18px;
+  padding: 0 0 0 20px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .idea {
   font-size: 14px;
   color: var(--ts);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .example {
   background: var(--warm);
   border-radius: 8px;
-  padding: 16px 18px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .exampleLabel {
@@ -104,7 +231,7 @@
 
 .exampleTitle {
   font-family: var(--font-serif);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--tp);
   margin: 0;
@@ -117,52 +244,109 @@
   margin: 0;
 }
 
-/* --- Exercise panel --- */
+/* ── Illustration ── */
 
-.exercises {
-  padding: 40px 32px;
-  overflow-y: auto;
-  max-height: 100vh;
+.illustrationWrap {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 }
 
-.exerciseHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.exerciseNav {
+.illustrationHint {
   font-size: 12px;
   color: var(--tm);
-  font-weight: 500;
+  margin: 0;
+  text-align: center;
 }
 
-.stepBtns {
-  display: flex;
-  gap: 6px;
-}
-
-.stepBtn {
-  padding: 5px 12px;
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 5px;
+.startBtn {
+  padding: 10px 24px;
+  background: var(--amber);
+  color: white;
+  border: none;
+  border-radius: 6px;
   font-family: var(--font-sans);
-  font-size: 12px;
-  color: var(--ts);
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: border-color 0.15s;
+  align-self: flex-start;
+  transition: opacity 0.15s;
 }
 
-.stepBtn:hover:not(:disabled) {
-  border-color: var(--amber);
-  color: var(--amber);
+.startBtn:hover {
+  opacity: 0.85;
 }
 
-.stepBtn:disabled {
-  opacity: 0.35;
-  cursor: default;
+/* ── Completion card ── */
+
+.completionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  padding: 40px 0;
 }
+
+.completionIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--green);
+  color: white;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.completionTitle {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--tp);
+  margin: 0;
+}
+
+.completionSub {
+  font-size: 15px;
+  color: var(--tm);
+  margin: 0;
+}
+
+.completionBody {
+  font-size: 14px;
+  color: var(--ts);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 380px;
+}
+
+.completionBtn {
+  padding: 10px 24px;
+  background: var(--amber);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-top: 8px;
+}
+
+.completionBtn:hover {
+  opacity: 0.85;
+}
+
+.completionLocked {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tm);
+  background: var(--warm);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+

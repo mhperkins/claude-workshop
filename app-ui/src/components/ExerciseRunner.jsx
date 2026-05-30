@@ -1,16 +1,19 @@
 import { useRef, useState } from 'react';
 import { callAgent } from '../agent/callAgent.js';
 import { markComplete, isComplete } from '../store/progressStore.js';
+import { MarkdownOutput } from './MarkdownOutput.jsx';
+import { CompanionPanel } from './CompanionPanel.jsx';
 import styles from './ExerciseRunner.module.css';
 
-export function ExerciseRunner({ exercise, onComplete }) {
-  const [prompt, setPrompt] = useState(exercise.starterText ?? '');
+export function ExerciseRunner({ exercise, initialPrompt, onPromptChange, onComplete }) {
+  const [prompt, setPrompt] = useState(initialPrompt ?? exercise.starterText ?? '');
   const [output, setOutput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showExample, setShowExample] = useState(false);
   const [hasRun, setHasRun] = useState(false);
   const [done, setDone] = useState(() => isComplete(exercise.id));
+  const [companionOpen, setCompanionOpen] = useState(false);
   const abortRef = useRef(null);
   const outputRef = useRef(null);
 
@@ -58,6 +61,11 @@ export function ExerciseRunner({ exercise, onComplete }) {
     onComplete?.();
   }
 
+  function openInClaude() {
+    window.open('https://claude.ai', '_blank', 'noopener');
+    setCompanionOpen(true);
+  }
+
   return (
     <div className={styles.runner}>
       <div className={styles.meta}>
@@ -70,9 +78,22 @@ export function ExerciseRunner({ exercise, onComplete }) {
         <p className={styles.contextText}>{exercise.context}</p>
       </div>
 
-      <div className={styles.systemRow}>
-        <span className={styles.systemLabel}>Claude's role</span>
-        <p className={styles.systemText}>{exercise.system}</p>
+      <div className={styles.blueprint}>
+        <div className={styles.blueprintSystem}>
+          <div className={styles.blueprintHeader}>
+            <span className={styles.blueprintTag}>Pre-set</span>
+            <span className={styles.blueprintLabel}>Claude's role</span>
+          </div>
+          <p className={styles.blueprintText}>{exercise.system}</p>
+        </div>
+        <div className={styles.blueprintArrow}>↓</div>
+        <div className={styles.blueprintUser}>
+          <div className={styles.blueprintHeader}>
+            <span className={styles.blueprintTagUser}>You write</span>
+            <span className={styles.blueprintLabel}>Your prompt</span>
+          </div>
+          <p className={styles.blueprintPlaceholder}>What you type below becomes the user turn in the context window.</p>
+        </div>
       </div>
 
       <div className={styles.promptSection}>
@@ -83,7 +104,7 @@ export function ExerciseRunner({ exercise, onComplete }) {
           id={`prompt-${exercise.id}`}
           className={styles.textarea}
           value={prompt}
-          onChange={e => setPrompt(e.target.value)}
+          onChange={e => { setPrompt(e.target.value); onPromptChange?.(e.target.value); }}
           placeholder="Write a prompt that gets Claude to accomplish the goal above…"
           rows={6}
           disabled={loading}
@@ -100,6 +121,9 @@ export function ExerciseRunner({ exercise, onComplete }) {
               Stop
             </button>
           )}
+          <button className={styles.claudeBtn} onClick={openInClaude} title="Open Claude.ai with a companion panel">
+            Try in Claude.ai ↗
+          </button>
         </div>
         {error && <p className={styles.error}>{error}</p>}
       </div>
@@ -108,7 +132,7 @@ export function ExerciseRunner({ exercise, onComplete }) {
         <div className={styles.outputSection}>
           <span className={styles.outputLabel}>Claude's response</span>
           <div className={styles.output} ref={outputRef}>
-            {output}
+            <MarkdownOutput text={output} />
             {loading && <span className={styles.cursor}>▌</span>}
           </div>
         </div>
@@ -138,6 +162,15 @@ export function ExerciseRunner({ exercise, onComplete }) {
         </button>
       )}
       {done && <p className={styles.doneMsg}>Exercise complete</p>}
+
+      {companionOpen && (
+        <CompanionPanel
+          exercise={exercise}
+          done={done}
+          onMarkComplete={handleMarkDone}
+          onDismiss={() => setCompanionOpen(false)}
+        />
+      )}
     </div>
   );
 }

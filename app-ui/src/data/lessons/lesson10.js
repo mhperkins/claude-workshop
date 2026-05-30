@@ -4,6 +4,45 @@ export const lesson10 = {
   title: 'Capstone: Build Your Own Tool',
   technicalBar: 'All of the above',
   concept: 'Apply everything. Pick one problem in your own life and build something that solves it. The capstone is not about polish. It\'s about completing the full cycle: spec, memory setup, build, verify.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user describes an idea and Claude returns a one-page tool spec',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'Product designer. Ruthlessly focused on the simplest version; lists what is out of scope.',
+      user: 'Write a one-page spec for a tool that tracks books I’ve read and my verdict.',
+      response: [
+        { type: 'text', text: 'Book Tracker — one-page spec:' },
+        { type: 'bullets', items: [
+          'Does: log books + your verdict',
+          'Golden path: search → mark read → note',
+          'Out of scope: ratings, social, sync',
+        ] },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. "Simplest version" keeps the spec from sprawling before you write any code.',
+      },
+      {
+        x: 72, y: 46,
+        label: 'Describe the problem',
+        text: 'Start from the problem in plain words. The spec turns that into a concrete shape you can build against.',
+      },
+      {
+        x: 40, y: 62,
+        label: 'A short golden path',
+        text: 'Three to five steps for the core action. If it is longer, the first version is too ambitious. Cut it down.',
+      },
+      {
+        x: 40, y: 76,
+        label: 'Out of scope, on purpose',
+        text: 'Naming what you are NOT building is how a capstone ships. Next step: feed this spec back to Claude to write the CLAUDE.md.',
+      },
+    ],
+  },
   keyIdeas: [
     'Brief first: one page, what it does, who uses it, what the golden path is',
     'CLAUDE.md before code: set up project memory before writing a single component',

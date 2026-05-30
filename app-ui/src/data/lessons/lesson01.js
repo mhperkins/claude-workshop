@@ -4,6 +4,48 @@ export const lesson01 = {
   title: 'How to Talk to Claude',
   technicalBar: 'None',
   concept: 'Claude is a context window, not a chatbot. It predicts the most useful next tokens given everything in its current context; it does not search the internet or remember past conversations. The skill is context curation, not question-asking.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat interface showing the system prompt, user message, and response that make up the context window',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'You are a helpful teacher explaining AI concepts to beginners.',
+      user: 'Explain what a context window is in plain terms.',
+      response: [
+        {
+          type: 'text',
+          text: 'Think of the context window like a whiteboard. Everything I can see is written on it: your question, prior messages, any files you\'ve shared. When it fills up, older content falls off the edge.',
+        },
+      ],
+    },
+    annotations: [
+      {
+        x: 30, y: 7,
+        label: 'Model selector',
+        text: 'You can switch between Claude models here. Sonnet is the default — capable and fast for most tasks.',
+      },
+      {
+        x: 50, y: 27,
+        label: 'System prompt',
+        text: 'Set by the app or API before the conversation starts. The user typically doesn\'t see this. It configures Claude\'s role, tone, and constraints.',
+      },
+      {
+        x: 82, y: 47,
+        label: 'Your message',
+        text: 'The user turn. What you type — plus the system prompt above it — forms Claude\'s full context. Specificity here directly shapes the response.',
+      },
+      {
+        x: 22, y: 67,
+        label: 'Claude\'s response',
+        text: 'The assistant turn. Claude predicts the most useful tokens given everything above: system prompt, your message, and any prior conversation.',
+      },
+      {
+        x: 50, y: 91,
+        label: 'Next prompt',
+        text: 'Each new message appends to the context. Claude always sees the full history — not just the latest message. This is what "context window" means.',
+      },
+    ],
+  },
   keyIdeas: [
     'A prompt is: system prompt + conversation history + any documents you paste in',
     'The context window is finite. What you include (and exclude) shapes the response.',

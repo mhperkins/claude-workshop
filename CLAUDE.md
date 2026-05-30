@@ -2,6 +2,8 @@
 
 > Project memory for Claude Code. Read this before doing anything else in this project.
 
+**Update protocol:** When Max says "update current state," update the Current State section above to reflect what was just built, then prepend a new dated entry to `CHANGELOG.md`.
+
 ---
 
 ## What This Is
@@ -10,31 +12,42 @@ An interactive web app that teaches a 10-class curriculum: "Build Your Own Tools
 
 The app was built in Session 1 (2026-05-29). All 10 lessons are fully written with complete exercise content. The app builds and runs.
 
-**Run it:**
+**Run it (both servers, one command from root):**
 ```
-cd app-ui
 npm run dev
 ```
-Opens `http://localhost:5174`. (Port 5174 is fixed in vite.config.js to avoid conflict with Composer's Compass on 5173.)
+Or separately:
+```
+# Terminal 1 — API proxy
+cd server && npm run dev
+
+# Terminal 2 — Vite frontend
+cd app-ui && npm run dev
+```
+Frontend opens on `http://localhost:5174` (fixed in vite.config.js). Server runs on port 3001. API key goes in `server/.env`.
+
+**Preview inside VS Code:** with the dev server running, open the app in VS Code's built-in Simple Browser (`Cmd/Ctrl+Shift+P` → "Simple Browser: Show" → enter the localhost URL) instead of an external browser. It's an embedded Chromium webview tab, so the app lives next to the editor and HMR updates show live. Note: if port 5174 is taken, Vite falls back to the next free port (5175, 5176, ...) — check the terminal output for the actual URL.
 
 ---
 
 ## Current State
 
-**Status: MVP complete.** All screens built, all 10 lessons fully written, build passes clean, golden path verified.
+**Status: Session 5 complete.** Carousel navigation upgraded to floating side arrows. Prompt text now persists across slide navigation.
 
 **What works:**
-- ApiKeyGate: user enters their Anthropic API key once, stored in localStorage
-- CourseHome: 10-class grid with progress badges (done/total per lesson)
-- LessonView: two-column layout (lesson content left, exercise right)
-- ExerciseRunner: prompt textarea, Run button, streaming output, reflection question, "Show example prompt" toggle, "Mark complete" button
-- Progress persisted in localStorage across refreshes
+- ApiKeyGate: splash screen ("Start the course"), stores `workshop:started` flag in localStorage. No API key entry needed (key lives in server `.env`).
+- CourseHome: 10-class grid with progress badges (done/total per lesson). "Reset progress" button top-right. "CLAUDE.md Generator" bonus tool card.
+- LessonView: carousel-based, single-column, centered (max 720px). Slide 0 = lesson intro. Slides 1..N = exercises. Final slide = completion card (locked until all exercises done). Dot nav bar at top shows completion state per slide. Floating `‹`/`›` arrow buttons on left/right edges of the slide area (replaced the bottom Prev/Next bar). Keyboard: Escape = back, ArrowLeft/Right = prev/next slide. CSS translateX slide-in animation (directional). Prompt text per exercise cached in `promptCache` state and passed back via `initialPrompt`/`onPromptChange`, so typing survives navigating between slides.
+- ExerciseRunner: prompt textarea (controlled by parent cache), Run button, streaming output rendered via `MarkdownOutput`, reflection question, "Show example prompt" toggle, "Mark complete" button
+- MarkdownOutput: custom markdown renderer (h1-h3, bold, italic, inline code, fenced code blocks, unordered/ordered lists)
+- ClaudeMdGenerator: bonus tool (accessible from CourseHome), guides user through generating a CLAUDE.md for their own project
+- Express proxy server (`server/`): handles all Anthropic API calls on port 3001. API key in `server/.env`. SSE streaming proxied back to browser.
+- Progress persisted in localStorage across refreshes. Reset progress button wired in CourseHome.
 
 **What is not built yet:**
 - Mobile layout (desktop-first for now)
 - Instructor/cohort view
 - Auth or accounts
-- Any backend
 
 ---
 
@@ -45,8 +58,8 @@ Opens `http://localhost:5174`. (Port 5174 is fixed in vite.config.js to avoid co
 | Framework | Vite + React (plain JS, no TypeScript) |
 | Styling | CSS modules per component + design tokens in `src/styles/tokens.css` |
 | Fonts | Cormorant Garamond + DM Sans via Google Fonts |
-| API | Direct browser fetch to Anthropic API (`api.anthropic.com/v1/messages`) with `anthropic-dangerous-direct-browser-access: true` header. User provides their own key. |
-| Data | Lesson content in `src/data/lessons/lesson*.js`. Progress in localStorage under `workshop:progress`. API key under `workshop:api-key`. |
+| API | Browser fetches `http://localhost:3001/api/chat`. Express server in `server/` proxies to Anthropic using key from `server/.env`. SSE stream forwarded back. |
+| Data | Lesson content in `src/data/lessons/lesson*.js`. Progress in localStorage under `workshop:progress`. Started flag under `workshop:started`. |
 
 ---
 
@@ -54,6 +67,10 @@ Opens `http://localhost:5174`. (Port 5174 is fixed in vite.config.js to avoid co
 
 ```
 claude-workshop/
+├── server/
+│   ├── index.js                       # Express proxy: POST /api/chat → Anthropic SSE
+│   ├── package.json
+│   └── .env                           # ANTHROPIC_API_KEY (not committed)
 └── app-ui/
     ├── vite.config.js                  # port 5174
     └── src/
@@ -61,13 +78,13 @@ claude-workshop/
         ├── styles/
         │   └── tokens.css             # all design tokens (colors, fonts, shadows)
         ├── agent/
-        │   └── callAgent.js           # single API call function, SSE stream reader
+        │   └── callAgent.js           # fetches localhost:3001/api/chat, reads SSE stream
         ├── store/
-        │   └── progressStore.js       # load/save/mark/isComplete via localStorage
+        │   └── progressStore.js       # load/save/mark/isComplete/countCompleted/resetProgress
         ├── data/
         │   ├── index.js               # exports lessons array + getLessonById()
         │   └── lessons/
-        │       ├── lesson01.js        # How to Talk to Claude (2 exercises, fully written)
+        │       ├── lesson01.js        # How to Talk to Claude (2 exercises)
         │       ├── lesson02.js        # Brainstorming (2 exercises)
         │       ├── lesson03.js        # Markdown (2 exercises)
         │       ├── lesson04.js        # Project Memory (2 exercises)
@@ -79,10 +96,11 @@ claude-workshop/
         │       └── lesson10.js        # Capstone (3 exercises)
         └── components/
             ├── App.jsx                # root: ApiKeyGate wraps CourseHome or LessonView
-            ├── ApiKeyGate.jsx         # key entry screen; persists to localStorage
+            ├── ApiKeyGate.jsx         # splash screen; sets workshop:started in localStorage
             ├── CourseHome.jsx         # 10-card grid with progress badges
-            ├── LessonView.jsx         # two-column: content left, ExerciseRunner right
-            └── ExerciseRunner.jsx     # goal + context + prompt textarea + run + output
+            ├── LessonView.jsx         # slide nav: intro → exercises → completion; keyboard shortcuts
+            ├── ExerciseRunner.jsx     # goal + context + prompt textarea + run + MarkdownOutput
+            └── MarkdownOutput.jsx     # custom markdown renderer for Claude response panel
 ```
 
 Each `.jsx` has a companion `.module.css` in the same directory.
@@ -148,7 +166,7 @@ await callAgent({
 });
 ```
 
-The function reads `localStorage.getItem('workshop:api-key')` internally. Throws on bad key or API error with a human-readable message.
+Posts to `http://localhost:3001/api/chat`. No API key in the browser. Throws on network error or non-200 response with a human-readable message.
 
 ---
 
@@ -156,13 +174,8 @@ The function reads `localStorage.getItem('workshop:api-key')` internally. Throws
 
 These are ideas, not committed work. Pick up any of them in a future session:
 
-1. **Navigation improvement:** add keyboard shortcuts (Escape to go back, arrow keys for prev/next exercise)
-2. **Better output rendering:** render markdown in the Claude response panel instead of plain text
-3. **Lesson completion screen:** when all exercises in a lesson are done, show a summary card before going back
-4. **Progress reset:** a "Reset progress" button in a settings panel (currently requires clearing localStorage manually)
-5. **CLAUDE.md generation tool:** a bonus feature where the app helps you write a CLAUDE.md for your own project (uses Class 4 as the exercise)
-6. **Instructor view:** a separate `/instructor` route that shows aggregate progress across a class cohort (requires a backend)
-7. **Mobile layout:** the current two-column LessonView stacks poorly below 900px
+1. **Instructor view:** a separate `/instructor` route that shows aggregate progress across a class cohort (requires a backend)
+2. **Mobile layout:** the current LessonView stacks poorly below 900px
 
 ---
 

@@ -4,6 +4,40 @@ export const lesson06 = {
   title: 'Back-End and API Integration',
   technicalBar: 'Medium-High',
   concept: 'The API is the same model as the chat, but you control the context programmatically. You send a system prompt, a messages array, and configuration. You get text back. The callAgent pattern (one file handles all AI calls) is the architectural decision that keeps the rest of the app clean.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user specifies an XML output format and Claude returns a JavaScript parser',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'Expert JS dev. Write defensive parsers using regex and string methods.',
+      user: 'Write a parser that pulls <title> out. Return null if absent.',
+      response: [
+        { type: 'code', filename: 'parse.js', code: 'function parse(text) {\n  const m = text.match(/<title>([^<]*)<\\/title>/);\n  return m ? { title: m[1].trim() } : null;\n}' },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. "Defensive" steers Claude toward null-checks instead of code that throws.',
+      },
+      {
+        x: 72, y: 46,
+        label: 'Specify both ends',
+        text: 'Give the exact input format and the exact output shape. A parser is a well-defined task, so be precise about both.',
+      },
+      {
+        x: 40, y: 60,
+        label: 'Structured data out',
+        text: 'The parser is the boundary between Claude’s text and your app’s state: text in, a clean object out.',
+      },
+      {
+        x: 40, y: 74,
+        label: 'Handles the missing case',
+        text: 'It returns null when the tag is absent. Always test the failure path, not just the happy path.',
+      },
+    ],
+  },
   keyIdeas: [
     'The Anthropic SDK: messages array, system prompt, model selection, streaming',
     'callAgent() is a boundary: components call it, they never import the SDK directly',

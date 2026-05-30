@@ -4,6 +4,45 @@ export const lesson02 = {
   title: 'Brainstorming and Design Thinking',
   technicalBar: 'None',
   concept: 'Claude\'s best use as a thinking partner is when you give it constraints, not when you ask open questions. "Give me ideas" produces noise. "Here are my constraints: what would you do?" produces signal.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user supplies constraints and Claude returns a focused list of buildable ideas',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'You are a product design consultant helping someone plan a software tool.',
+      user: 'Constraints: solo dev, one weekend, React, for busy parents. What should I build?',
+      response: [
+        { type: 'text', text: 'Given those constraints, three focused directions:' },
+        { type: 'bullets', items: [
+          'Shared family grocery list, one-tap reuse',
+          'After-school carpool scheduler, no accounts',
+          'Weekly meal planner that builds the list',
+        ] },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. Framing Claude as a design consultant beats leaving it as a generic chatbot.',
+      },
+      {
+        x: 78, y: 46,
+        label: 'Lead with constraints',
+        text: 'Budget, time, tech stack, audience. Constraints are what turn "give me ideas" (noise) into buildable suggestions (signal).',
+      },
+      {
+        x: 32, y: 66,
+        label: 'A short, focused list',
+        text: 'Because you constrained the space, Claude returns options you can actually choose from, not twenty vague directions.',
+      },
+      {
+        x: 50, y: 91,
+        label: 'Keep iterating',
+        text: 'Push back in the next turn: "I like #2, but assume no smartphones." Brainstorming is a conversation, not a one-shot prompt.',
+      },
+    ],
+  },
   keyIdeas: [
     'Constraints make brainstorming useful: budget, audience, tech stack, deadline',
     'Use Claude to stress-test decisions before you build them',

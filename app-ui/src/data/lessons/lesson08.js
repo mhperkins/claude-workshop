@@ -4,6 +4,45 @@ export const lesson08 = {
   title: 'Workflows and Automation',
   technicalBar: 'Medium',
   concept: 'Claude Code can be wired into your environment so recurring tasks run with one command or happen automatically. The key is identifying the tasks you do every session and encoding them as protocols, hooks, or scheduled agents.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user describes a project and Claude returns an ordered end-of-session protocol',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'You design repeatable workflows. Protocols are specific, ordered, unambiguous.',
+      user: 'Write an end-of-session protocol. Files: CLAUDE.md (index), CHANGELOG.md (log).',
+      response: [
+        { type: 'text', text: 'Run these in order, every session:' },
+        { type: 'bullets', items: [
+          '1. Append today’s changes to CHANGELOG.md',
+          '2. Rewrite Current State in CLAUDE.md',
+          '3. Update the project index last',
+        ] },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Set the role',
+        text: 'Paste this as your system prompt in Claude.ai. "Ordered and unambiguous" is what makes a protocol followable without interpretation.',
+      },
+      {
+        x: 72, y: 46,
+        label: 'Name your files',
+        text: 'Tell Claude exactly which files hold state. Automation has to be specific about paths and roles to be reliable.',
+      },
+      {
+        x: 40, y: 62,
+        label: 'An exact sequence',
+        text: 'The output is a numbered checklist you run the same way every time, so nothing gets forgotten at session end.',
+      },
+      {
+        x: 40, y: 76,
+        label: 'Order matters',
+        text: 'Detail files first, index last. A protocol that updates the index before the details can leave them out of sync.',
+      },
+    ],
+  },
   keyIdeas: [
     'Claude Code hooks: shell commands that run before or after Claude takes an action',
     'Skills and slash commands: reusable workflows you invoke by name',

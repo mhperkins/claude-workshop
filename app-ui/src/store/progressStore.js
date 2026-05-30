@@ -30,3 +30,7 @@ export function countCompleted(exercises) {
   const done = load();
   return exercises.filter(ex => done.has(ex.id)).length;
 }
+
+export function resetProgress() {
+  localStorage.removeItem(KEY);
+}

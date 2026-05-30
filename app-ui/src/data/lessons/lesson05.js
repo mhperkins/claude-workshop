@@ -4,6 +4,40 @@ export const lesson05 = {
   title: 'Front-End Development',
   technicalBar: 'Medium',
   concept: 'Claude Code writes components when you give it a spec. Your job is to write good specs and review the output. The conventions you establish (CSS modules, named exports, design tokens) make Claude\'s output consistent and reviewable.',
+  illustration: {
+    src: null,
+    alt: 'Claude chat where the user gives a component brief and Claude returns the React JSX',
+    mockup: {
+      model: 'Claude Sonnet',
+      system: 'Expert React dev. CSS modules, named exports, colors from CSS variables.',
+      user: 'Write a StatusBadge component. Props: status, label. Color by status.',
+      response: [
+        { type: 'code', filename: 'StatusBadge.jsx', code: 'export function StatusBadge({ status, label }) {\n  return <span className={styles[status]}>{label}</span>;\n}' },
+      ],
+    },
+    annotations: [
+      {
+        x: 50, y: 25,
+        label: 'Encode conventions',
+        text: 'Paste this as your system prompt in Claude.ai. The rules (CSS modules, named exports, no hardcoded color) make every output consistent.',
+      },
+      {
+        x: 70, y: 46,
+        label: 'Write a brief',
+        text: 'Name, props, and behavior. A brief produces far better code than a vague "make me a badge."',
+      },
+      {
+        x: 40, y: 62,
+        label: 'Generated component',
+        text: 'Claude returns code that follows your conventions, because you stated them. Review it before accepting.',
+      },
+      {
+        x: 50, y: 91,
+        label: 'Iterate precisely',
+        text: 'Next turn: "add an optional icon prop, change nothing else." Targeted edits beat rewriting from scratch.',
+      },
+    ],
+  },
   keyIdeas: [
     'Brief first, code second: describe what a component renders, its props, and its interactions',
     'Design token systems mean Claude never hardcodes a color. The convention does the work.',
