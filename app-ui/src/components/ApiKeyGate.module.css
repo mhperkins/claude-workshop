@@ -1,0 +1,128 @@
+.gate {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cream);
+  padding: 24px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 48px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--tp);
+  margin: 0 0 4px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--ts);
+  margin: 0 0 32px;
+}
+
+.body {
+  font-size: 14px;
+  color: var(--ts);
+  line-height: 1.6;
+  margin: 0 0 24px;
+}
+
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--tp);
+  background: var(--cream);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: var(--amber);
+}
+
+.error {
+  font-size: 13px;
+  color: var(--red);
+  margin: 6px 0 0;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 11px;
+  background: var(--amber);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: var(--amber-lt);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--tm);
+  margin: 12px 0 0;
+  text-align: center;
+}
+
+.hint a {
+  color: var(--amber);
+  text-decoration: none;
+}
+
+.hint a:hover {
+  text-decoration: underline;
+}
+
+.changeKey {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--tm);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.changeKey:hover {
+  color: var(--ts);
+  border-color: var(--ts);
+}

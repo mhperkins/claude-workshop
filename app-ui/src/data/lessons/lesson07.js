@@ -1,0 +1,40 @@
+export const lesson07 = {
+  id: 7,
+  slug: 'training-evaluation',
+  title: 'Training and Evaluation',
+  technicalBar: 'Medium',
+  concept: '"It worked once" is not the same as "it works reliably." Training Claude to behave consistently requires a benchmark, a controlled experiment, annotation of real output, and rules extracted from patterns. The system prompt is a hypothesis: you test it and update it.',
+  keyIdeas: [
+    'Benchmark first: you need a human baseline before you can measure improvement',
+    'A/B testing: same prompt, one variable changed, evaluate the difference',
+    'Annotation: mark surplus, gaps, and contradictions against the benchmark',
+    'DO/DON\'T rules: consistent patterns become standing rules in your system prompt',
+    'Version your system prompt: one change at a time, keep the archive',
+  ],
+  compassExample: {
+    label: 'The training research track',
+    text: 'Composer\'s Compass ran Adaptive vs. noAdaptive experiments across three pieces. Every guide output was annotated against a benchmark. Consistent patterns (counting errors, directive framing, surplus analysis) became entries in analysis-rules.md. Each system prompt version (v5.1 through v5.9) documents exactly what changed and why.',
+  },
+  exercises: [
+    {
+      id: '07-a',
+      title: 'Get Claude to compare two prompt variations',
+      goal: 'Give Claude two versions of the same prompt (one with a specific change) and get it to analyze the difference in output quality.',
+      context: 'The A/B test is the core unit of prompt engineering. To run one, you change exactly one thing, run both, and evaluate. Getting Claude to articulate the difference forces it to reason about output quality explicitly.',
+      system: 'You are a prompt engineering expert. You analyze AI outputs critically and specifically. You identify concrete differences, not vague impressions.',
+      starterText: '',
+      examplePrompt: 'Compare these two prompts for asking Claude to summarize a piece of music:\n\nPrompt A: "Summarize this piece of music for me."\n\nPrompt B: "Summarize this piece of music for a performer who is learning it for the first time. Focus on: overall structure, key emotional moments, and the two most technically demanding sections. Keep it under 200 words."\n\nFor each prompt, describe: what kind of response it would produce, what would be missing, and what a performer would find useful vs. not useful. Then identify the specific additions in Prompt B that make the difference, and name the category each addition belongs to (audience, scope, format, length, etc.).',
+      reflection: 'How many categories of improvement did Claude identify? Apply those same categories to a prompt you\'re using in your own work.',
+    },
+    {
+      id: '07-b',
+      title: 'Get Claude to extract a rule from annotations',
+      goal: 'Give Claude a set of annotated AI outputs and get it to extract one standing rule that would prevent the problem.',
+      context: 'Annotation is the step between observation and rules. When you see the same failure pattern across multiple outputs, that\'s a rule waiting to be written. Claude can extract the rule from your annotations and write it in the DO/DON\'T format that works best in system prompts.',
+      system: 'You are a prompt engineering expert. You extract precise, actionable rules from annotated AI outputs. Rules should be specific enough to prevent the exact failure observed.',
+      starterText: '',
+      examplePrompt: 'Here are three annotated outputs from an AI music analysis tool. Each has a [PROBLEM] tag:\n\nOutput 1: "The piece contains approximately 847 measures." [PROBLEM: The AI counted wrong; it\'s 194 measures. Counting from text descriptions is unreliable.]\n\nOutput 2: "There are roughly 20 theme repetitions in the development section." [PROBLEM: Exact count given with false confidence; no way to verify from the intake form.]\n\nOutput 3: "The exposition repeats about 12 times throughout." [PROBLEM: Same pattern: a precise-sounding count that is probably wrong.]\n\nExtract one standing rule in this format:\nDO/DON\'T: [The rule]\nReason: [Why this pattern causes failures]\nExample of violation: [One sentence showing what the rule prevents]',
+      reflection: 'Would this rule be placed in the system prompt or in a separate rules document? For a complex analysis tool, why might you keep rules in a separate file that gets loaded into context rather than hard-coded in the system prompt?',
+    },
+  ],
+};
