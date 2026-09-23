@@ -32,17 +32,21 @@ Frontend opens on `http://localhost:5174` (fixed in vite.config.js). Server runs
 
 ## Current State
 
-**Status: Session 5 complete.** Carousel navigation upgraded to floating side arrows. Prompt text now persists across slide navigation.
+**Status: Session 6 complete.** Annotated claude.ai diagrams on all 10 lessons. Whole-codebase audit done with fixes applied. Project pushed to a public GitHub repo.
+
+**Repo:** https://github.com/mhperkins/claude-workshop (public, remote `origin`, default branch `main`).
 
 **What works:**
 - ApiKeyGate: splash screen ("Start the course"), stores `workshop:started` flag in localStorage. No API key entry needed (key lives in server `.env`).
 - CourseHome: 10-class grid with progress badges (done/total per lesson). "Reset progress" button top-right. "CLAUDE.md Generator" bonus tool card.
-- LessonView: carousel-based, single-column, centered (max 720px). Slide 0 = lesson intro. Slides 1..N = exercises. Final slide = completion card (locked until all exercises done). Dot nav bar at top shows completion state per slide. Floating `‹`/`›` arrow buttons on left/right edges of the slide area (replaced the bottom Prev/Next bar). Keyboard: Escape = back, ArrowLeft/Right = prev/next slide. CSS translateX slide-in animation (directional). Prompt text per exercise cached in `promptCache` state and passed back via `initialPrompt`/`onPromptChange`, so typing survives navigating between slides.
-- ExerciseRunner: prompt textarea (controlled by parent cache), Run button, streaming output rendered via `MarkdownOutput`, reflection question, "Show example prompt" toggle, "Mark complete" button
-- MarkdownOutput: custom markdown renderer (h1-h3, bold, italic, inline code, fenced code blocks, unordered/ordered lists)
-- ClaudeMdGenerator: bonus tool (accessible from CourseHome), guides user through generating a CLAUDE.md for their own project
-- Express proxy server (`server/`): handles all Anthropic API calls on port 3001. API key in `server/.env`. SSE streaming proxied back to browser.
-- Progress persisted in localStorage across refreshes. Reset progress button wired in CourseHome.
+- LessonView: carousel-based, single-column, centered (max 720px). Slide 0 = lesson intro (now includes an annotated diagram). Slides 1..N = exercises. Final slide = completion card (locked until all exercises done). Dot nav bar at top shows completion state per slide. Floating `‹`/`›` arrow buttons on left/right edges of the slide area. Keyboard: Escape = back, ArrowLeft/Right = prev/next slide. CSS translateX slide-in animation (directional). Prompt text per exercise cached in `promptCache` state and passed back via `initialPrompt`/`onPromptChange`, so typing survives navigating between slides.
+- AnnotatedScreenshot: data-driven claude.ai chat mockup with clickable numbered annotation pins → popovers. Renders a `mockup` object (system/user/response blocks: `text`, `code`, `bullets`) from each lesson's `illustration`. All 10 lessons have one; each shows that lesson's artifact (idea list, markdown template, CLAUDE.md, component, parser, etc.). Fixed 320px canvas keeps pin %-coordinates stable; popovers escape the frame (mockup carries the `overflow:hidden`, not the frame).
+- ExerciseRunner: prompt textarea (controlled by parent cache), Run button, streaming output via `MarkdownOutput`, reflection, "Show example prompt" toggle, "Mark complete", plus "Try in Claude.ai" which opens claude.ai and shows `CompanionPanel`.
+- CompanionPanel: floating dark panel with copyable system prompt / starter text, for doing the exercise in real claude.ai.
+- MarkdownOutput: custom markdown renderer (h1-h3, bold, italic, inline code, fenced code blocks, unordered/ordered lists).
+- ClaudeMdGenerator: bonus tool (accessible from CourseHome), guides user through generating a CLAUDE.md for their own project.
+- Express proxy server (`server/`): handles all Anthropic API calls on port 3001. Validates input, anchors CORS to localhost, aborts the upstream stream on client disconnect, exits at startup if the key is missing. `callAgent` surfaces server error events to the user.
+- Progress persisted in localStorage across refreshes.
 
 **What is not built yet:**
 - Mobile layout (desktop-first for now)
@@ -67,10 +71,13 @@ Frontend opens on `http://localhost:5174` (fixed in vite.config.js). Server runs
 
 ```
 claude-workshop/
+├── .gitignore                          # root: ignores .env, .env.local, node_modules, dist
+├── package.json                        # root: `npm run dev` runs both servers via concurrently
 ├── server/
-│   ├── index.js                       # Express proxy: POST /api/chat → Anthropic SSE
+│   ├── index.js                       # Express proxy: POST /api/chat → Anthropic SSE (hardened)
 │   ├── package.json
-│   └── .env                           # ANTHROPIC_API_KEY (not committed)
+│   ├── .env.example                   # placeholder (committed)
+│   └── .env                           # ANTHROPIC_API_KEY (gitignored)
 └── app-ui/
     ├── vite.config.js                  # port 5174
     └── src/
@@ -95,11 +102,14 @@ claude-workshop/
         │       ├── lesson09.js        # Troubleshooting (2 exercises)
         │       └── lesson10.js        # Capstone (3 exercises)
         └── components/
-            ├── App.jsx                # root: ApiKeyGate wraps CourseHome or LessonView
+            ├── App.jsx                # root: ApiKeyGate → CourseHome | LessonView | ClaudeMdGenerator
             ├── ApiKeyGate.jsx         # splash screen; sets workshop:started in localStorage
-            ├── CourseHome.jsx         # 10-card grid with progress badges
-            ├── LessonView.jsx         # slide nav: intro → exercises → completion; keyboard shortcuts
-            ├── ExerciseRunner.jsx     # goal + context + prompt textarea + run + MarkdownOutput
+            ├── CourseHome.jsx         # 10-card grid + bonus tool card; reset progress
+            ├── LessonView.jsx         # slide nav: intro(+diagram) → exercises → completion; keyboard + prompt cache
+            ├── ExerciseRunner.jsx     # goal + context + prompt textarea + run + MarkdownOutput + Try in Claude.ai
+            ├── AnnotatedScreenshot.jsx# data-driven claude.ai mockup + annotation pins/popovers
+            ├── CompanionPanel.jsx     # floating panel: copyable system/starter text for claude.ai
+            ├── ClaudeMdGenerator.jsx  # bonus tool: generate a CLAUDE.md from Q&A
             └── MarkdownOutput.jsx     # custom markdown renderer for Claude response panel
 ```
 
@@ -123,6 +133,28 @@ Every lesson file exports one object. Every exercise has these fields:
   reflection: string,   // shown after first successful run
 }
 ```
+
+Each lesson also has an optional `illustration` rendered on the intro slide by `AnnotatedScreenshot`:
+
+```js
+illustration: {
+  src: null,            // null → render the CSS mockup; a URL → render an <img>
+  alt: string,
+  mockup: {
+    model: string,      // optional, defaults to 'Claude Sonnet'
+    system: string,     // system bubble
+    user: string,       // user bubble
+    response: [         // assistant bubble, ordered blocks
+      { type: 'text', text: string },
+      { type: 'code', filename?: string, code: string },
+      { type: 'bullets', items: string[] },
+    ],
+  },
+  annotations: [ { x, y, label, text } ],  // x/y are % over a fixed 320px canvas
+}
+```
+
+Authoring rule: keep mockup content short enough to fit the fixed canvas (code ≤4 lines, bullets ≤4, system/user 1-2 lines) so pins stay aligned and nothing clips.
 
 ---
 
@@ -182,3 +214,34 @@ These are ideas, not committed work. Pick up any of them in a future session:
 ## Origin
 
 Built in one session from the curriculum document `claude-workshop-curriculum.md` (a 10-class workshop outline). The parent project that supplies the real-world examples is Composer's Compass at `C:\Users\maxwe\OneDrive\Desktop\Claude\Apps and Tools\Composition_Hub_Tool\composers-compass\`.
+
+---
+
+## End-of-Session Protocol
+
+> 🚨 **"update current state" = FOUR steps, ALWAYS. Not two.** Docs alone is an incomplete response.
+> Steps **3 (commit and push)** and **4 (delivery slide)** are **NON-NEGOTIABLE** and the most often
+> forgotten. If you are about to reply after only steps 1 and 2, STOP. You are not done.
+
+When Max says "update current state", do all four automatically, with no separate prompt. Do not stop,
+do not ask, do not report back until all four are complete.
+
+1. **Rewrite the Current State section of this file.** Replace it with this session's snapshot. Prune finished items, add new
+   ones. Overwrite, do not append.
+2. ****Add a `CHANGELOG.md` entry** at the project root: what changed, why, the effort level and the date. Newest at the top. If nothing changed, write the date, the topic and the conclusion in a short entry.**
+3. **➡️ COMMIT AND PUSH (do not skip).** Use the **PowerShell tool** for all git. Stage the
+   session's work **by name, never `-A`**, or a parallel session's uncommitted work gets swept in under
+   a message that does not mention it. Commit on **`main`** with a clear message ending in the
+   `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>` line, then
+   `git push origin main`. `CLAUDE.md` **is tracked here**, so the rewritten Current State goes into the commit.
+4. **➡️ BUILD THE DELIVERY SLIDE (do not skip).** One self-contained HTML slide detailing what was
+   committed and pushed: cards, badges, icons, the commit hash and the branch, built fresh in this
+   project's palette. Save it to ``docs/deliveries/<YYYY-MM>/<YYYY-MM-DD>/`` with a date-prefixed filename (create the month folder on the month's first delivery, the date folder on the day's first), and name
+   the path in the reply. Every delivery from one day shares that day's folder.
+
+**Self-check before replying:** Did I commit? Did I push? Did I write the slide? If any answer is no,
+the protocol is unfinished.
+
+**The canonical version is in `~/.claude/CLAUDE.md`** under "End-of-Session Protocol (every project)".
+This copy carries it in full on purpose, so this project never depends on that file being loaded. Where
+the two differ, **this file wins**, because the values above are this project's.
