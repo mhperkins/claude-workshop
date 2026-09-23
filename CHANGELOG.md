@@ -4,6 +4,24 @@ Entries are newest-first. Each entry corresponds to a "update current state" che
 
 ---
 
+## 2026-05-29 — Session 6: Lesson diagrams, codebase audit, GitHub repo
+
+**What was built:**
+- Annotated claude.ai diagrams on all 10 lesson intros. Made `AnnotatedScreenshot` / `ClaudeMockup` data-driven: each lesson's `illustration.mockup` supplies system/user/response blocks (`text`, `code`, `bullets`) rendered by one shared chassis, with clickable numbered pins → popovers. Migrated lesson 1's hardcoded mockup into data; authored lessons 2-10 to each show that lesson's artifact.
+- Diagram robustness: fixed 320px canvas keeps pin %-coordinates stable; moved `overflow:hidden` from `.frame` onto `.mockup` so popovers escape the frame without clipping while code still clips. Trimmed code blocks to fit.
+- Whole-codebase audit (two Explore agents) with verified findings; corrected agent overstatements (no secret was committed; pin inline-style is allowed by convention).
+- Audit fixes applied:
+  - Root `.gitignore` (ignores `.env`, `.env.local`, `node_modules`, `dist`).
+  - `callAgent` now throws on server `{error}` SSE events instead of silently truncating.
+  - Server hardened: startup key check (exit if missing), CORS anchored to `^http://localhost(:\d+)?$`, 1 MB body limit, validates `messages`/`system`, aborts upstream stream on client disconnect, logs stream errors, model overridable via `ANTHROPIC_MODEL`.
+  - Dark-surface color tokens added to `tokens.css` (`--ch-fg*`, `--ch-line*`, `--ch-fill`, `--ch-code-bg`, `--amber-border`); replaced literal hexes in `MarkdownOutput`, `CompanionPanel`, `AnnotatedScreenshot`.
+  - Left the `setTick` force-update pattern as-is (correct; rewrite is pure churn).
+- Copied the API key into `server/.env` and pushed the project to a new public GitHub repo: https://github.com/mhperkins/claude-workshop (default branch `main`).
+
+**Status after session:** All 10 lessons illustrated. Audit clean. Project versioned and on GitHub.
+
+---
+
 ## 2026-05-29 — Session 5: Side-arrow carousel nav + prompt persistence
 
 **What was built:**
